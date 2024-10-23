@@ -20,6 +20,8 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: normiehamuda/bookstore-management-system:${{ github.sha }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: SSH into EC2 instance and deploy
         uses: appleboy/ssh-action@master
