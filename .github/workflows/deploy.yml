@@ -34,12 +34,12 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }} 
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
-            chown www-data:www-data .env
-            sed -i 's/APP_KEY=app_key/APP_KEY=${{ secrets.APP_KEY }}/g' .env
-            sed -i 's/DB_HOST=localhost/DB_HOST=${{ secrets.DB_HOST }}/g' .env
-            sed -i 's/DB_USERNAME=root/DB_USERNAME=${{ secrets.DB_USERNAME }}/g' .env
-            sed -i 's/DB_PASSWORD=password/DB_PASSWORD=${{ secrets.DB_PASSWORD }}/g' .env
             docker pull normiehamuda/bookstore-management-system:${{ github.sha }}
             docker stop bookstore-management-prod || true
             docker rm bookstore-management-prod || true
-            docker run -d -p 80:80 --name bookstore-management-prod normiehamuda/bookstore-management-system:${{ github.sha }} 
+            docker run -d -p 80:80 --name bookstore-management-prod \
+              -e APP_KEY="${{ secrets.APP_KEY }}" \
+              -e DB_HOST="${{ secrets.DB_HOST }}" \
+              -e DB_USERNAME="${{ secrets.DB_USERNAME }}" \
+              -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+              normiehamuda/bookstore-management-system:${{ github.sha }}
