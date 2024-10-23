@@ -1,0 +1,34 @@
+name: Docker CI/CD
+
+on:
+  push:
+    branches:
+      - main 
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build and push image to Docker Hub
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: normiehamuda/bookstore-management-system:${{ github.sha }}
+
+      - name: SSH into EC2 instance and deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }} 
+          username: ${{ secrets.EC2_USERNAME }} 
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script: |
+            docker pull normiehamuda/bookstore-management-system:${{ github.sha }}
+            docker stop bookstore-management-prod || true
+            docker rm bookstore-management-prod || true
+            docker run -d -p 80:80 --name bookstore-management-prod normiehamuda/bookstore-management-system:${{ github.sha }} 
