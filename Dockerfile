@@ -24,6 +24,8 @@ RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 # Copy the application code
 COPY . /var/www/html
 
+COPY .env.example .env 
+
 # Set the working directory
 WORKDIR /var/www/html
 
