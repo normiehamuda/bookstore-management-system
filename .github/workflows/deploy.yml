@@ -34,6 +34,7 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }} 
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
+            sed -i 's/APP_KEY=your_app_key/APP_KEY=${{ secrets.APP_KEY }}/g' .env
             sed -i 's/DB_HOST=localhost/DB_HOST=${{ secrets.DB_HOST }}/g' .env
             sed -i 's/DB_DATABASE=your_database_name/DB_DATABASE=${{ secrets.DB_DATABASE }}/g' .env
             sed -i 's/DB_USERNAME=your_database_user/DB_USERNAME=${{ secrets.DB_USERNAME }}/g' .env
