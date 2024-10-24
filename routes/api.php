@@ -19,6 +19,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::get('/books/search', [BookController::class, 'search']);
+Route::get('/books/elastic-search', [BookController::class, 'elasticSearch']);
 
 Route::resource('books', BookController::class)->only([
   'index',

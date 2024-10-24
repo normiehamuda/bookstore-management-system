@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class BookFormRequest extends FormRequest
 {
@@ -26,7 +27,19 @@ class BookFormRequest extends FormRequest
       'author' => 'required',
       'price' => 'required|numeric|min:0',
       'description' => 'required|min:10',
-      'isbn' => 'required|min:13|max:13'
+      'isbn' => [
+        'required',
+        'min:13',
+        'max:13',
+        Rule::unique('books')->ignore($this->book),
+      ]
+    ];
+  }
+
+  public function messages(): array
+  {
+    return [
+      'isbn.unique' => 'The ISBN must be unique.'
     ];
   }
 }

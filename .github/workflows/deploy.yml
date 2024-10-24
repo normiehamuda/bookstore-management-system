@@ -3,7 +3,7 @@ name: Docker CI/CD
 on:
   push:
     branches:
-      - main 
+      - main
 
 jobs:
   build-and-deploy:
@@ -19,7 +19,6 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      
       - name: Build and push image to Docker Hub
         uses: docker/build-push-action@v4
         with:
@@ -30,13 +29,18 @@ jobs:
       - name: SSH into EC2 instance and deploy
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.EC2_HOST }} 
-          username: ${{ secrets.EC2_USERNAME }} 
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
             docker pull normiehamuda/bookstore-management-system:${{ github.sha }}
             docker stop bookstore-management-prod || true
             docker rm bookstore-management-prod || true
+            echo "OPENSEARCH_HOST=${{ secrets.OPENSEARCH_HOST }}" >> .env
+            echo "OPENSEARCH_PORT=${{ secrets.OPENSEARCH_PORT }}" >> .env
+            echo "OPENSEARCH_SCHEME=${{ secrets.OPENSEARCH_SCHEME }}" >> .env
+            echo "OPENSEARCH_USERNAME=${{ secrets.OPENSEARCH_USERNAME }}" >> .env
+            echo "OPENSEARCH_PASSWORD=${{ secrets.OPENSEARCH_PASSWORD }}" >> .env
             docker run -d -p 80:80 --name bookstore-management-prod \
               -e APP_KEY="${{ secrets.APP_KEY }}" \
               -e DB_HOST="${{ secrets.DB_HOST }}" \

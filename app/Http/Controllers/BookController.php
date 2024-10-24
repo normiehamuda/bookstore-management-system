@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\BookCreatedEvent;
 use Illuminate\Support\Facades\Gate;
 use App\Models\Book;
 use App\Http\Requests\BookFormRequest;
@@ -11,6 +12,13 @@ use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
+
+  private $opensearchService;
+
+  public function __construct(OpenSearchService $opensearchService)
+  {
+    $this->opensearchService = $opensearchService;
+  }
 
   public function index(Request $request)
   {
@@ -44,6 +52,8 @@ class BookController extends Controller
   {
     $validated = $request->validated();
     $book = Book::create($validated);
+
+    event(new BookCreatedEvent($book));
 
     return response()->json([
       'book' => $book,
@@ -111,5 +121,24 @@ class BookController extends Controller
     }
 
     return BookResource::collection($books);
+  }
+
+  public function elasticSearch(Request $request)
+  {
+    $query = $request->input('q');
+    $page = $request->input('page', 1);
+    $perPage = $request->input('per_page', 10);
+
+    if (!$query) {
+      return response()->json(['message' => 'Missing search query'], 400);
+    }
+
+    $results = $this->opensearchService->searchBooks($query, $page, $perPage);
+
+    if (isset($results['error'])) {
+      return response()->json($results, 500);
+    }
+
+    return response()->json($results);
   }
 }
