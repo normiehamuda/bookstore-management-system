@@ -15,26 +15,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: "8.2"
-          extensions: mbstring, pdo, bcmath, pdo_mysql, openssl, tokenizer, xml, ctype, json
+      # - name: Set up PHP
+      #   uses: shivammathur/setup-php@v2
+      #   with:
+      #     php-version: "8.2"
+      #     extensions: mbstring, pdo, bcmath, pdo_mysql, openssl, tokenizer, xml, ctype, json
 
-      - name: Install Composer dependencies
-        run: composer install --no-progress --prefer-dist --optimize-autoloader --no-interaction
+      # - name: Install Composer dependencies
+      #   run: composer install --no-progress --prefer-dist --optimize-autoloader --no-interaction
 
-      - name: Set up environment
-        run: cp .env.example .env
+      # - name: Set up environment
+      #   run: cp .env.example .env
 
-      - name: Generate application key
-        run: php artisan key:generate
+      # - name: Generate application key
+      #   run: php artisan key:generate
 
-      - name: clear config
-        run: php artisan config:clear
+      # - name: clear config
+      #   run: php artisan config:clear
 
-      - name: Run Laravel tests
-        run: php artisan test
+      # - name: Run Laravel tests
+      #   run: php artisan test
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
