@@ -8,18 +8,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    environment: production
-    env:
-      OPENSEARCH_HOST: ${{ secrets.OPENSEARCH_HOST }}
-      OPENSEARCH_PORT: ${{ secrets.OPENSEARCH_PORT }}
-      OPENSEARCH_SCHEME: ${{ secrets.OPENSEARCH_SCHEME }}
-      OPENSEARCH_USERNAME: ${{ secrets.OPENSEARCH_USERNAME }}
-      OPENSEARCH_PASSWORD: ${{ secrets.OPENSEARCH_PASSWORD }}
-      APP_KEY: ${{ secrets.APP_KEY }}
-      DB_HOST: ${{ secrets.DB_HOST }}
-      DB_USERNAME: ${{ secrets.DB_USERNAME }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -49,4 +38,8 @@ jobs:
             docker stop bookstore-management-prod || true
             docker rm bookstore-management-prod || true
             docker run -d -p 80:80 --name bookstore-management-prod \
+              -e APP_KEY="${{ secrets.APP_KEY }}" \
+              -e DB_HOST="${{ secrets.DB_HOST }}" \
+              -e DB_USERNAME="${{ secrets.DB_USERNAME }}" \
+              -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
               normiehamuda/bookstore-management-system:${{ github.sha }}
