@@ -46,5 +46,4 @@ jobs:
               -e OPENSEARCH_SCHEME="${{ secrets.OPENSEARCH_SCHEME }}" \
               -e OPENSEARCH_USERNAME="${{ secrets.OPENSEARCH_USERNAME }}" \
               -e OPENSEARCH_PASSWORD="${{ secrets.OPENSEARCH_PASSWORD }}" \
-              
               normiehamuda/bookstore-management-system:"${{ github.sha }}
