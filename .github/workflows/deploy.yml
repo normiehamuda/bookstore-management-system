@@ -36,14 +36,15 @@ jobs:
             docker pull normiehamuda/bookstore-management-system:${{ github.sha }}
             docker stop bookstore-management-prod || true
             docker rm bookstore-management-prod || true
-            echo "OPENSEARCH_HOST=${{ secrets.OPENSEARCH_HOST }}" >> .env
-            echo "OPENSEARCH_PORT=${{ secrets.OPENSEARCH_PORT }}" >> .env
-            echo "OPENSEARCH_SCHEME=${{ secrets.OPENSEARCH_SCHEME }}" >> .env
-            echo "OPENSEARCH_USERNAME=${{ secrets.OPENSEARCH_USERNAME }}" >> .env
-            echo "OPENSEARCH_PASSWORD=${{ secrets.OPENSEARCH_PASSWORD }}" >> .env
             docker run -d -p 80:80 --name bookstore-management-prod \
               -e APP_KEY="${{ secrets.APP_KEY }}" \
               -e DB_HOST="${{ secrets.DB_HOST }}" \
               -e DB_USERNAME="${{ secrets.DB_USERNAME }}" \
               -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+              -e OPENSEARCH_HOST=${{ secrets.OPENSEARCH_HOST }} \
+              -e OPENSEARCH_PORT=${{ secrets.OPENSEARCH_PORT }} \
+              -e OPENSEARCH_SCHEME=${{ secrets.OPENSEARCH_SCHEME }} \
+              -e OPENSEARCH_USERNAME=${{ secrets.OPENSEARCH_USERNAME }} \
+              -e OPENSEARCH_PASSWORD=${{ secrets.OPENSEARCH_PASSWORD }} \
+              
               normiehamuda/bookstore-management-system:${{ github.sha }}
