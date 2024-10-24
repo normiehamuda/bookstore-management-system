@@ -99,6 +99,11 @@ This is a simple REST API for managing a bookstore built with Laravel. It includ
 
    Now, when you test protected endpoints (like creating, updating, or deleting books), Swagger UI will automatically include your Sanctum token in the `Authorization` header of the requests.
 
+## Test Results
+You can run tests using command php artisan test
+
+For details of the most recent test run, please refer to the [Test Results](TEST_RESULTS.md) document. 
+
 ## Additional Notes:
 
 * **OpenSearch Setup:** You need to have an OpenSearch instance running. Refer to the OpenSearch documentation for installation and setup instructions ([https://docs.aws.amazon.com/opensearch-service/](https://docs.aws.amazon.com/opensearch-service/)).
