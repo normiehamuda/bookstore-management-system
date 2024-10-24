@@ -30,9 +30,6 @@ jobs:
       - name: Generate application key
         run: php artisan key:generate
 
-      - name: clear cache
-        run: php artisan cache:clear
-
       - name: clear config
         run: php artisan config:clear
 
