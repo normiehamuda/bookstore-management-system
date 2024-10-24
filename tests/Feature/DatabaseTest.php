@@ -12,7 +12,7 @@ use Illuminate\Validation\ValidationException;
 
 class DatabaseTest extends TestCase
 {
-  use RefreshDatabase; // Reset the database after each test
+  use RefreshDatabase;
 
   protected function setUp(): void
   {
@@ -33,39 +33,23 @@ class DatabaseTest extends TestCase
 
   public function test_cannot_create_book_with_missing_required_fields()
   {
-    // Missing title
+
     $bookData = Book::factory()->make(['title' => null])->toArray();
     $this->expectException(\Illuminate\Database\QueryException::class);
     Book::create($bookData);
 
-    // Missing author (assuming author is required)
     $bookData = Book::factory()->make(['author' => null])->toArray();
     $this->expectException(\Illuminate\Database\QueryException::class);
     Book::create($bookData);
 
-    // Missing price 
     $bookData = Book::factory()->make(['price' => null])->toArray();
     $this->expectException(\Illuminate\Database\QueryException::class);
     Book::create($bookData);
 
-    // Missing ISBN
     $bookData = Book::factory()->make(['isbn' => null])->toArray();
     $this->expectException(\Illuminate\Database\QueryException::class);
     Book::create($bookData);
   }
-
-  // public function test_cannot_create_book_with_invalid_data()
-  // {
-  //   // Invalid ISBN (too short)
-  //   $bookData = Book::factory()->make(['isbn' => '123'])->toArray();
-  //   $this->expectException(\Illuminate\Database\QueryException::class);
-  //   Book::create($bookData);
-
-  //   // Negative price (if not allowed)
-  //   $bookData = Book::factory()->make(['price' => -10])->toArray();
-  //   $this->expectException(\Illuminate\Database\QueryException::class);
-  //   Book::create($bookData);
-  // }
 
   public function test_can_retrieve_book_by_id()
   {
@@ -86,7 +70,7 @@ class DatabaseTest extends TestCase
 
   public function test_retrieving_non_existing_book_returns_null()
   {
-    $book = Book::find(9999); // Non-existing ID
+    $book = Book::find(9999);
     $this->assertNull($book);
   }
 
@@ -97,7 +81,7 @@ class DatabaseTest extends TestCase
     $book->title = $updatedTitle;
     $book->save();
 
-    $this->assertEquals($updatedTitle, $book->fresh()->title); // Use fresh() to get the updated data
+    $this->assertEquals($updatedTitle, $book->fresh()->title);
     $this->assertDatabaseHas('books', ['title' => $updatedTitle]);
   }
 
@@ -105,21 +89,10 @@ class DatabaseTest extends TestCase
   {
     $book = Book::factory()->create();
 
-    // Missing title
     $book->title = null;
     $this->expectException(\Illuminate\Database\QueryException::class);
     $book->save();
   }
-
-  // public function test_cannot_update_book_with_invalid_data()
-  // {
-  //   $book = Book::factory()->create();
-
-  //   // Invalid ISBN
-  //   $book->isbn = '123';
-  //   $this->expectException(\Illuminate\Database\QueryException::class);
-  //   $book->save();
-  // }
 
   public function test_can_delete_book()
   {
@@ -131,11 +104,9 @@ class DatabaseTest extends TestCase
 
   public function test_deleting_non_existing_book_does_not_throw_exception()
   {
-    Book::destroy(9999); // Non-existing ID
-    $this->assertTrue(true); // Just checking that no exception is thrown
+    Book::destroy(9999);
+    $this->assertTrue(true);
   }
-
-  // Relationship Tests (User-Role)
 
   public function test_user_belongs_to_a_role()
   {
@@ -149,11 +120,7 @@ class DatabaseTest extends TestCase
     $roleName = $user->role->name;
 
     $this->assertIsString($roleName);
-    // You can add further assertions based on your role data 
   }
-
-
-  // Query Tests (Examples)
 
   public function test_can_filter_books_by_title()
   {
@@ -177,10 +144,6 @@ class DatabaseTest extends TestCase
     $this->assertEquals('Python Basics', $sortedBooks[2]->title);
   }
 
-  // ... Add more query tests for filtering, sorting, pagination, and search
-
-  // Data Integrity Tests
-
   public function test_cannot_create_book_with_duplicate_isbn()
   {
     $book1 = Book::factory()->create();
@@ -200,29 +163,15 @@ class DatabaseTest extends TestCase
     User::create($userData);
   }
 
-  // ... Add more data integrity tests for foreign key constraints
-
-  // Database Transactions Tests
-
   public function test_database_transactions_rollback_on_failure()
   {
     try {
       DB::transaction(function () {
-        Book::create(['title' => 'Test Book', 'author' => 'Test Author', 'price' => 25, 'isbn' => 'invalid isbn']); // Invalid ISBN will cause an exception
+        Book::create(['title' => 'Test Book', 'author' => 'Test Author', 'price' => 25, 'isbn' => 'invalid isbn']);
       });
     } catch (\Exception $e) {
-      // Exception is expected 
     }
 
-    $this->assertDatabaseMissing('books', ['title' => 'Test Book']); // Check if the book was not created 
+    $this->assertDatabaseMissing('books', ['title' => 'Test Book']);
   }
-
-  // public function test_database_transactions_commit_on_success()
-  // {
-  //   DB::transaction(function () {
-  //     Book::create(['title' => 'Test Book', 'author' => 'Test Author', 'price' => 25, 'isbn' => '9781234567890']);
-  //   });
-
-  //   $this->assertDatabaseHas('books', ['title' => 'Test Book']); // Check if the book was created
-  // }
 }

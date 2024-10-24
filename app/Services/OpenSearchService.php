@@ -3,11 +3,8 @@
 namespace App\Services;
 
 use App\Models\Book;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
 use OpenSearch\ClientBuilder;
 
-use function Illuminate\Log\log;
 
 class OpenSearchService
 {
@@ -35,7 +32,7 @@ class OpenSearchService
       $params = [
         'index' => 'books',
         'body' => [
-          'from' => ($page - 1) * $perPage, // Calculate offset for pagination
+          'from' => ($page - 1) * $perPage,
           'size' => $perPage,
           'query' => [
             'multi_match' => [
@@ -48,18 +45,14 @@ class OpenSearchService
 
       $results = $this->client->search($params);
 
-      // Format the results (see next section)
+
       $formattedResults = $this->formatResults($results);
 
       return $formattedResults;
     } catch (\Exception $e) {
-      // Log the exception for debugging
-      // \Log::error('OpenSearch Error: ' . $e->getMessage());
-
-      // Return an appropriate error response
       return [
         'error' => 'An error occurred while searching.',
-        'message' => $e->getMessage(), // You might want to hide this in production
+        'message' => $e->getMessage(),
       ];
     }
   }
@@ -67,11 +60,10 @@ class OpenSearchService
   public function indexBook(Book $book)
   {
     $params = [
-      'index' => 'books', // Your OpenSearch index name
-      'id'    => $book->id, // Use the book's ID as the document ID
-      'body'  => $book->toArray(), // Index all the book attributes
+      'index' => 'books',
+      'id'    => $book->id,
+      'body'  => $book->toArray(),
     ];
-
     $this->client->index($params);
   }
 
@@ -81,7 +73,7 @@ class OpenSearchService
     $formattedResults = [
       'data' => [],
       'meta' => [
-        'current_page' => 1, // You'll need to calculate these based on pagination
+        'current_page' => 1,
         'last_page' => 1,
         'per_page' => 10,
         'total' => $results['hits']['total']['value'],
@@ -100,17 +92,9 @@ class OpenSearchService
         ];
       }
     } catch (\Exception $e) {
-      // Log the exception for debugging
       print('OpenSearch Error: ' . $e->getMessage());
     }
 
     return $formattedResults;
   }
-
-  // // Correctly format the results to include the _id as 'id'
-  // $formattedResults = collect($results['hits']['hits'])->map(function ($hit) {
-  //   return array_merge(['id' => $hit['_id']], $hit['_source']);
-  // })->toArray(); // Convert the collection to an array
-
-  // return $formattedResults;
 }

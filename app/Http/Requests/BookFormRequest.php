@@ -5,6 +5,14 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
+
+/**
+ * @OA\Schema(
+ *     schema="BookRequest", 
+ *     title="BookRequest",
+ *     description="Request data for creating a book"
+ * )
+ */
 class BookFormRequest extends FormRequest
 {
   /**
@@ -35,6 +43,31 @@ class BookFormRequest extends FormRequest
       ]
     ];
   }
+
+  /**
+   * @OA\Property(property="title", type="string", description="Book Title")
+   */
+  public $title;
+
+  /**
+   * @OA\Property(property="author", type="string", description="Book Author")
+   */
+  public $author;
+
+  /**
+   * @OA\Property(property="description", type="string", description="Book Description")
+   */
+  public $description;
+
+  /**
+   * @OA\Property(property="isbn", type="string", description="Book ISBN")
+   */
+  public $isbn;
+
+  /**
+   * @OA\Property(property="price", type="number", format="float", description="Book Price")
+   */
+  public $price;
 
   public function messages(): array
   {

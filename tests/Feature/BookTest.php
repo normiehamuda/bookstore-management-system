@@ -18,11 +18,11 @@ class BookTest extends TestCase
 
   public function test_unauthenticated_user_cannot_create_book()
   {
-    $bookData = Book::factory()->make()->toArray(); // Use factory for test data
+    $bookData = Book::factory()->make()->toArray();
 
     $response = $this->postJson('/api/books', $bookData);
 
-    $response->assertStatus(403); // Expect unauthorized
+    $response->assertStatus(403);
   }
 
   public function test_unauthenticated_user_cannot_update_book()
@@ -46,14 +46,14 @@ class BookTest extends TestCase
 
   public function test_regular_user_cannot_create_book()
   {
-    $user = User::factory()->create(['role_id' => 2]); // Regular user role
+    $user = User::factory()->create(['role_id' => 2]);
     Sanctum::actingAs($user);
 
     $bookData = Book::factory()->make()->toArray();
 
     $response = $this->postJson('/api/books', $bookData);
 
-    $response->assertStatus(401); // Expect forbidden
+    $response->assertStatus(401);
   }
 
   public function test_regular_user_cannot_update_book()
@@ -83,7 +83,7 @@ class BookTest extends TestCase
 
   public function test_admin_user_can_create_book()
   {
-    $admin = User::factory()->create(['role_id' => 1]); // Admin role
+    $admin = User::factory()->create(['role_id' => 1]);
     Sanctum::actingAs($admin);
 
     $bookData = Book::factory()->make()->toArray();
@@ -99,8 +99,6 @@ class BookTest extends TestCase
           'description',
           'price',
           'isbn',
-          'created_at',
-          'updated_at',
         ],
         'success'
       ]);
@@ -127,8 +125,6 @@ class BookTest extends TestCase
           'description',
           'price',
           'isbn',
-          'created_at',
-          'updated_at',
         ],
         'success'
       ]);
@@ -153,8 +149,6 @@ class BookTest extends TestCase
     $this->assertDatabaseMissing('books', ['id' => $book->id]);
   }
 
-  // CRUD Operations Tests
-
   public function test_create_book_with_valid_data_succeeds()
   {
     $admin = User::factory()->create(['role_id' => 1]);
@@ -173,8 +167,6 @@ class BookTest extends TestCase
           'description',
           'price',
           'isbn',
-          'created_at',
-          'updated_at',
         ],
         'success'
       ]);
@@ -187,17 +179,13 @@ class BookTest extends TestCase
     $admin = User::factory()->create(['role_id' => 1]);
     Sanctum::actingAs($admin);
 
-    // Missing title 
     $bookData = Book::factory()->make(['title' => null])->toArray();
     $response = $this->postJson('/api/books', $bookData);
     $response->assertStatus(422);
 
-    // Invalid ISBN (too short)
     $bookData = Book::factory()->make(['isbn' => '12345'])->toArray();
     $response = $this->postJson('/api/books', $bookData);
     $response->assertStatus(422);
-
-    // ... other invalid data tests 
   }
 
 
@@ -217,8 +205,6 @@ class BookTest extends TestCase
             'description',
             'price',
             'isbn',
-            'created_at',
-            'updated_at',
           ]
         ],
         'meta' => [
@@ -229,7 +215,7 @@ class BookTest extends TestCase
         ]
       ]);
 
-    $this->assertCount(10, $response->json('data')); // Default pagination is 10
+    $this->assertCount(10, $response->json('data'));
   }
 
   public function test_get_single_book_returns_book_data()
@@ -244,7 +230,7 @@ class BookTest extends TestCase
 
   public function test_get_non_existing_book_returns_404()
   {
-    $response = $this->getJson('/api/books/9999'); // Non-existing ID
+    $response = $this->getJson('/api/books/9999');
 
     $response->assertStatus(404);
   }
@@ -269,8 +255,6 @@ class BookTest extends TestCase
           'description',
           'price',
           'isbn',
-          'created_at',
-          'updated_at',
         ],
         'success'
       ]);
@@ -285,35 +269,29 @@ class BookTest extends TestCase
 
     $book = Book::factory()->create();
 
-    // Missing title
     $updatedBookData = Book::factory()->make(['title' => null])->toArray();
     $response = $this->putJson("/api/books/{$book->id}", $updatedBookData);
     $response->assertStatus(422);
 
-    // Invalid ISBN
     $updatedBookData = Book::factory()->make(['isbn' => '123'])->toArray();
     $response = $this->putJson("/api/books/{$book->id}", $updatedBookData);
     $response->assertStatus(422);
 
-    // Missing author
     $updatedBookData = Book::factory()->make(['author' => null])->toArray();
     $response = $this->putJson("/api/books/{$book->id}", $updatedBookData);
     $response->assertStatus(422);
     $response->assertJsonValidationErrors(['author']);
 
-    // Invalid price (not numeric)
     $updatedBookData = Book::factory()->make(['price' => 'abc'])->toArray();
     $response = $this->putJson("/api/books/{$book->id}", $updatedBookData);
     $response->assertStatus(422);
     $response->assertJsonValidationErrors(['price']);
 
-    // Invalid price (negative)
     $updatedBookData = Book::factory()->make(['price' => -10])->toArray();
     $response = $this->putJson("/api/books/{$book->id}", $updatedBookData);
     $response->assertStatus(422);
     $response->assertJsonValidationErrors(['price']);
 
-    // Short description
     $updatedBookData = Book::factory()->make(['description' => 'Too short'])->toArray();
     $response = $this->putJson("/api/books/{$book->id}", $updatedBookData);
     $response->assertStatus(422);
