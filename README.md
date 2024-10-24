@@ -74,6 +74,16 @@ This is a simple REST API for managing a bookstore built with Laravel. It includ
 
    The API will be available at `http://localhost:8000/api`.
 
+## API Endpoints
+
+* **Development:** The API for the development version is accessible at `http://localhost:8000/api`.
+* **Production:** The production version of the API is deployed at `http://bookstore.minassah.ly/api/`.
+
+## API Documentation
+
+* **Development:** Access the interactive API documentation for the development version at `http://localhost:8000/api/documentation`.
+* **Production:**  The API documentation for the production version is available at `http://bookstore.minassah.ly/api/documentation`. 
+
 ## API Documentation
 
 * **Swagger UI:** Access the interactive API documentation at `http://localhost:8000/api/documentation`.
