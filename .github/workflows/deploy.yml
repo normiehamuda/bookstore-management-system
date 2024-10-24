@@ -41,10 +41,10 @@ jobs:
               -e DB_HOST="${{ secrets.DB_HOST }}" \
               -e DB_USERNAME="${{ secrets.DB_USERNAME }}" \
               -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
-              -e OPENSEARCH_HOST=${{ secrets.OPENSEARCH_HOST }} \
-              -e OPENSEARCH_PORT=${{ secrets.OPENSEARCH_PORT }} \
-              -e OPENSEARCH_SCHEME=${{ secrets.OPENSEARCH_SCHEME }} \
-              -e OPENSEARCH_USERNAME=${{ secrets.OPENSEARCH_USERNAME }} \
-              -e OPENSEARCH_PASSWORD=${{ secrets.OPENSEARCH_PASSWORD }} \
+              -e OPENSEARCH_HOST="${{ secrets.OPENSEARCH_HOST }}" \
+              -e OPENSEARCH_PORT="${{ secrets.OPENSEARCH_PORT }}" \
+              -e OPENSEARCH_SCHEME="${{ secrets.OPENSEARCH_SCHEME }}" \
+              -e OPENSEARCH_USERNAME="${{ secrets.OPENSEARCH_USERNAME }}" \
+              -e OPENSEARCH_PASSWORD="${{ secrets.OPENSEARCH_PASSWORD }}" \
               
-              normiehamuda/bookstore-management-system:${{ github.sha }}
+              normiehamuda/bookstore-management-system:"${{ github.sha }}
