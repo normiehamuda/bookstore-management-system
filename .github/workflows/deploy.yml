@@ -30,6 +30,9 @@ jobs:
       - name: Generate application key
         run: php artisan key:generate
 
+      - name: Seed database
+        run: php artisan db:seed
+
       - name: Run Laravel tests
         run: php artisan test
 
