@@ -7,6 +7,7 @@ use App\Models\Role;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Validator as FacadesValidator;
 use Illuminate\Validation\ValidationException;
 
@@ -17,6 +18,7 @@ class DatabaseTest extends TestCase
   protected function setUp(): void
   {
     parent::setUp();
+    Artisan::call('optimize:clear');
     $this->seed();
   }
 

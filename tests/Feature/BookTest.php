@@ -4,6 +4,7 @@ use Tests\TestCase;
 use App\Models\Book;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
 use Laravel\Sanctum\Sanctum;
 
 class BookTest extends TestCase
@@ -13,6 +14,7 @@ class BookTest extends TestCase
   protected function setUp(): void
   {
     parent::setUp();
+    Artisan::call('optimize:clear');
     $this->seed();
   }
 
