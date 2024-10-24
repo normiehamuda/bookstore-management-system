@@ -8,6 +8,13 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * @OA\Schema(
+ *     schema="User",
+ *     title="User",
+ *     description="A user model"
+ * )
+ */
 class User extends Authenticatable
 {
   /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -47,6 +54,26 @@ class User extends Authenticatable
       'password' => 'hashed',
     ];
   }
+
+  /**
+   * @OA\Property(property="id", type="integer", description="User ID")
+   */
+  protected $id;
+
+  /**
+   * @OA\Property(property="name", type="string", description="User name")
+   */
+  protected $name;
+
+  /**
+   * @OA\Property(property="email", type="string", format="email", description="User email")
+   */
+  protected $email;
+
+  /**
+   * @OA\Property(property="role_id", type="integer", description="User role ID")
+   */
+  protected $role_id;
 
   public function role()
   {

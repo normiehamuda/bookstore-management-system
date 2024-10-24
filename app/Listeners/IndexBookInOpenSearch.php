@@ -28,7 +28,6 @@ class IndexBookInOpenSearch
   {
     $book = $event->book;
 
-    // Index the book data in OpenSearch
     $this->opensearchService->indexBook($book);
   }
 }
